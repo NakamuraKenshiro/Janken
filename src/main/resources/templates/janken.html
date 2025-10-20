@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Janken GAME!</title>
+</head>
+
+<body>
+  <h1>Janken GAME!</h1>
+
+  <p th:if="${userName != null}">Hi [[${userName}]]</p>
+
+  <a th:href="@{/janken/game(userName=${userName}, hand='Gu')}">ぐー</a>
+  <a th:href="@{/janken/game(userName=${userName}, hand='Choki')}">ちょき</a>
+  <a th:href="@{/janken/game(userName=${userName}, hand='Pa')}">ぱー</a>
+
+
+  <div th:if="${result != null}">
+    <p>あなたの手 [[${myHand}]]</p>
+    <p>相手の手 [[${cpuHand}]]</p>
+    <p>結果 [[${result}]]</p>
+  </div>
+</body>
+
+</html>
