@@ -22,7 +22,11 @@ public class JankenAuthConfiguration {
             .logoutSuccessUrl("/")) // ログアウト後に / にリダイレクト
         .authorizeHttpRequests(authz -> authz
             .requestMatchers("/janken/**").authenticated() // /janken/以下はログイン必須
-            .anyRequest().permitAll()); // それ以外は誰でもOK
+            .anyRequest().permitAll()) // それ以外は誰でもOK
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers("/h2-console/*", "/janken/**"))
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions.sameOrigin()));
     return http.build();
   }
 
