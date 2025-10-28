@@ -1,41 +1,47 @@
 package oit.is.z2883.kaizi.janken.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import oit.is.z2883.kaizi.janken.model.Entry;
-import oit.is.z2883.kaizi.janken.model.Janken;
+import oit.is.z2883.kaizi.janken.model.User;
+import oit.is.z2883.kaizi.janken.model.UserMapper;
+import oit.is.z2883.kaizi.janken.model.Match;
+import oit.is.z2883.kaizi.janken.model.MatchMapper;
 
 @Controller
 public class JankenController {
 
   @Autowired
-  Entry entry;
+  private UserMapper userMapper;
+
+  @Autowired
+  private MatchMapper matchMapper;
 
   @GetMapping("/janken")
-  public String janken(Model model, Principal prin) {
+  @Transactional
+  public String showJanken(ModelMap model, Principal prin) {
     String loginUser = prin.getName();
-    entry.addUser(loginUser);
+    ArrayList<User> users = userMapper.selectAllUsers();
+    ArrayList<Match> matches = matchMapper.selectAllMatches();
     model.addAttribute("loginUser", loginUser);
-    model.addAttribute("entry", entry);
+    model.addAttribute("users", users);
+    model.addAttribute("matches", matches);
     return "janken.html";
   }
 
-  @GetMapping("/janken/game")
-  public String play(@RequestParam String hand, Model model, Principal prin) {
+  @GetMapping("/match")
+  @Transactional
+  public String showMatch(@RequestParam Integer id, ModelMap model, Principal prin) {
     String loginUser = prin.getName();
-    entry.addUser(loginUser);
-
-    Janken game = new Janken(hand);
-
+    User opponent = userMapper.selectById(id);
     model.addAttribute("loginUser", loginUser);
-    model.addAttribute("entry", entry);
-    model.addAttribute("myHand", game.getMyHand());
-    model.addAttribute("cpuHand", game.getCpuHand());
-    model.addAttribute("result", game.getResult());
-    return "janken.html";
+    model.addAttribute("opponent", opponent);
+    return "match.html";
   }
+
 }
