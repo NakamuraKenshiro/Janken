@@ -27,6 +27,11 @@ public class JankenController {
   @Autowired
   UserMapper userMapper;
 
+  @GetMapping("/")
+  public String index() {
+    return "redirect:/index.html";
+  }
+
   @GetMapping("/janken")
   public String janken(Model model, Principal prin) {
     String loginUser = prin.getName();
@@ -60,7 +65,6 @@ public class JankenController {
 
   @GetMapping("/fight")
   public String fight(@RequestParam Integer id, @RequestParam String hand, Model model, Principal prin) {
-
     String loginUser = prin.getName();
     User user1 = userMapper.selectByName(loginUser);
     User user2 = userMapper.selectById(id);
