@@ -1,26 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8">
   <title>Janken GAME!</title>
 </head>
-
 <body>
+  <a href="/logout">ログアウト</a>
+
   <h1>Janken GAME!</h1>
 
-  <p th:if="${userName != null}">Hi [[${userName}]]</p>
+  <p>Hi [[${loginUser}]]</p>
 
-  <a th:href="@{/janken/game(userName=${userName}, hand='Gu')}">ぐー</a>
-  <a th:href="@{/janken/game(userName=${userName}, hand='Choki')}">ちょき</a>
-  <a th:href="@{/janken/game(userName=${userName}, hand='Pa')}">ぱー</a>
-
+  <h1>エントリー</h1>
+  <ul>
+    <li th:each="user : ${users}">
+      <a th:href="@{/match(id=${user.id})}" th:text="${user.name}"></a>
+    </li>
+  </ul>
 
   <div th:if="${result != null}">
     <p>あなたの手 [[${myHand}]]</p>
     <p>相手の手 [[${cpuHand}]]</p>
     <p>結果 [[${result}]]</p>
   </div>
-</body>
 
+  <h1>試合結果</h1>
+  <ul>
+    <li th:each="m : ${matches}"
+      th:text="'id:' + ${m.id} + ' user1:' + ${m.user1} + ' user2:' + ${m.user2} + ' user1の手:' + ${m.user1Hand} + ' user2の手:' + ${m.user2Hand}">
+    </li>
+  </ul>
+</body>
 </html>
