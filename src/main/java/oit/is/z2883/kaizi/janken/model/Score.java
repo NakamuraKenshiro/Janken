@@ -1,4 +1,4 @@
-package oit.is.inudaisuki.springboot_samples.model;
+package oit.is.z2883.kaizi.janken.model;
 
 import java.util.ArrayList;
 

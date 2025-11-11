@@ -14,6 +14,8 @@ import oit.is.z2883.kaizi.janken.model.Match;
 import oit.is.z2883.kaizi.janken.model.MatchMapper;
 import oit.is.z2883.kaizi.janken.model.User;
 import oit.is.z2883.kaizi.janken.model.UserMapper;
+import oit.is.z2883.kaizi.janken.model.MatchInfo;
+import oit.is.z2883.kaizi.janken.model.MatchInfoMapper;
 
 @Controller
 public class JankenController {
@@ -27,6 +29,9 @@ public class JankenController {
   @Autowired
   UserMapper userMapper;
 
+  @Autowired
+  MatchInfoMapper matchInfoMapper;
+
   @GetMapping("/")
   public String index() {
     return "redirect:/index.html";
@@ -35,18 +40,14 @@ public class JankenController {
   @GetMapping("/janken")
   public String janken(Model model, Principal prin) {
     String loginUser = prin.getName();
-
     entry.addUser("CPU");
     entry.addUser(loginUser);
-
     ArrayList<User> users = userMapper.selectAllUsers();
     ArrayList<Match> matches = matchMapper.selectAllMatches();
-
     model.addAttribute("loginUser", loginUser);
     model.addAttribute("entry", entry);
     model.addAttribute("users", users);
     model.addAttribute("matches", matches);
-
     return "janken.html";
   }
 
@@ -55,11 +56,9 @@ public class JankenController {
     String loginUser = prin.getName();
     User user1 = userMapper.selectByName(loginUser);
     User user2 = userMapper.selectById(id);
-
     model.addAttribute("loginUser", user1.getName());
     model.addAttribute("opponent", user2.getName());
     model.addAttribute("opponentId", id);
-
     return "match.html";
   }
 
@@ -68,25 +67,14 @@ public class JankenController {
     String loginUser = prin.getName();
     User user1 = userMapper.selectByName(loginUser);
     User user2 = userMapper.selectById(id);
-
-    String cpuHand = "Gu";
-    String result = judge(hand, cpuHand);
-
-    Match match = new Match();
-    match.setUser1(user1.getId());
-    match.setUser2(user2.getId());
-    match.setUser1Hand(hand);
-    match.setUser2Hand(cpuHand);
-    matchMapper.insertMatch(match);
-
+    MatchInfo mi = new MatchInfo();
+    mi.setUser1(user1.getId());
+    mi.setUser2(user2.getId());
+    mi.setUser1Hand(hand);
+    mi.setIsActive(true);
+    matchInfoMapper.insertMatchInfo(mi);
     model.addAttribute("loginUser", user1.getName());
-    model.addAttribute("opponent", user2.getName());
-    model.addAttribute("opponentId", id);
-    model.addAttribute("myHand", hand);
-    model.addAttribute("cpuHand", cpuHand);
-    model.addAttribute("result", result);
-
-    return "match.html";
+    return "wait.html";
   }
 
   private String judge(String myHand, String cpuHand) {
