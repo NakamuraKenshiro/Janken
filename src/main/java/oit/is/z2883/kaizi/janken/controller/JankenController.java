@@ -42,12 +42,19 @@ public class JankenController {
     String loginUser = prin.getName();
     entry.addUser("CPU");
     entry.addUser(loginUser);
+
     ArrayList<User> users = userMapper.selectAllUsers();
     ArrayList<Match> matches = matchMapper.selectAllMatches();
+
+    User me = userMapper.selectByName(loginUser);
+    ArrayList<MatchInfo> activeMatchInfos = matchInfoMapper.selectActiveByUser2(me.getId());
+
     model.addAttribute("loginUser", loginUser);
     model.addAttribute("entry", entry);
     model.addAttribute("users", users);
     model.addAttribute("matches", matches);
+    model.addAttribute("activeMatchInfos", activeMatchInfos);
+
     return "janken.html";
   }
 
@@ -56,9 +63,11 @@ public class JankenController {
     String loginUser = prin.getName();
     User user1 = userMapper.selectByName(loginUser);
     User user2 = userMapper.selectById(id);
+
     model.addAttribute("loginUser", user1.getName());
     model.addAttribute("opponent", user2.getName());
     model.addAttribute("opponentId", id);
+
     return "match.html";
   }
 
@@ -67,12 +76,14 @@ public class JankenController {
     String loginUser = prin.getName();
     User user1 = userMapper.selectByName(loginUser);
     User user2 = userMapper.selectById(id);
+
     MatchInfo mi = new MatchInfo();
     mi.setUser1(user1.getId());
     mi.setUser2(user2.getId());
     mi.setUser1Hand(hand);
     mi.setIsActive(true);
     matchInfoMapper.insertMatchInfo(mi);
+
     model.addAttribute("loginUser", user1.getName());
     return "wait.html";
   }
